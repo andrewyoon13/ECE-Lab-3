@@ -94,7 +94,7 @@ int readSW(void){
 void displayGPIO(int val) {
     int lookupTable[10];
 
-    //GPIO Pin numbering, select appropriate pin
+    //GPIO Pin numbering, select appropriate pin, address
     lookupTable[0] = 0x1; //0001
     lookupTable[1] = 0x3; //0011
     lookupTable[2] = 0x7; //0111
@@ -119,14 +119,14 @@ void displayGPIO(int val) {
 //Start of program
 int main(void) {
     
-    //Set pin directions
+    //Set pin directions -> assigns input/output for direction bits in direction register
     GPIO_ptr[1] |= 0x3FF; //Set as output bits (pins 0-9, lowest 10 bits are outputs)
     int delay;
 
     DELAY_LENGTH = 100; //Delay to prevent bouncing
     
     while(1) {
-        if (readSW()) //if switch is on, read from first potentiometer
+        if (readSW()) //2 channels, if switch is on, read from first potentiometer
         {
             ADC_ptr[0] = 0x1; //Refresh channel
 
@@ -135,7 +135,7 @@ int main(void) {
             value &= 0xFFF; //Only need lowest 12 bits
             
             //Display on GPIO pins (output)
-            displayGPIO(value * 10/4096); //ADC 12 bits (4096 values), GPIO is 10 pins
+            displayGPIO(value * 10/4096); //ADC 12 bits (4096 values), GPIO is 10 pins (0-9)
         }
 
         else //read from the second potentiometer 
@@ -147,7 +147,7 @@ int main(void) {
             value &= 0xFFF; //Only need lowest 12 bits
             
             //Display on GPIO pins (output)
-            displayGPIO(value * 10/4096); //ADC 12 bits (4096 values), GPIO is 10 pins
+            displayGPIO(value * 10/4096); //ADC 12 bits (4096 values), GPIO is 10 pins (0-9)
         }
 
         //Delay loop
